@@ -7,17 +7,18 @@ import com.management.enums.ERole;
 import com.management.payload.ApiResponse;
 import com.management.repositories.UserRepository;
 import com.management.utils.PasswordEncoder;
-import io.quarkus.security.identity.SecurityIdentity;
+import com.management.utils.TokenUtils;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
-import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 import lombok.RequiredArgsConstructor;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.jboss.resteasy.reactive.RestHeader;
 
 import java.util.Collections;
 
@@ -29,7 +30,7 @@ import java.util.Collections;
 public class UserResource {
 
     @Inject
-    SecurityIdentity identity;
+    JsonWebToken jwt;
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -55,12 +56,13 @@ public class UserResource {
 
     @PUT
     @Path("update")
-    @RolesAllowed({"NORMAL", "ADMIN", "STORE_OWNER"})
+//    @RolesAllowed({"NORMAL", "ADMIN", "STORE_OWNER"})
     public Response updateUser(
             @Valid UpdateUserDTO dto
+//            @Context SecurityContext ctx
     ) {
-
-        return Response.ok().entity(ApiResponse.success("User updated successfully", "Hi " + identity.getPrincipal().getName())).build();
+//        System.out.println(TokenUtils.getResponseString(ctx));
+        return Response.ok().entity(ApiResponse.success("User updated successfully")).build();
     }
 
 
